@@ -33,4 +33,30 @@ const registerUser = async(req,res) => {
     }
 };
 
-module.exports ={registerUser};
+// to get the user profile
+const getUserProfile = async(req,res) => {
+    const {userId} = req.params;
+
+    try{
+        const user = await User.findById(userId);
+
+        if (!user){
+            return res.status(404).json({msg : 'user not found'});
+        }
+
+        const userProfile = {
+            userId : user._id,
+            username : user.username,
+            email : user.email,
+            Notifications : user.notifications || []
+        };
+
+        res.json(userProfile);
+    }
+    catch(err){
+        console.error(err.message);
+        res.status(500).send('server error');
+    }
+};
+
+module.exports ={registerUser, getUserProfile};
