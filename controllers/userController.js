@@ -59,4 +59,38 @@ const getUserProfile = async(req,res) => {
     }
 };
 
-module.exports ={registerUser, getUserProfile};
+// update the user profile 
+const updateUserProfile = async (req, res) => {
+    const {userId} = req.params;
+    const {username, email} = req.body;
+
+    if (!username || !email){
+        return res.status(400).json({msg : 'Invalid data'});
+    }
+
+    try{
+        let user = await User.findById(userId);
+
+        if(!user){
+            return res.status(404).json({msg: 'User not found'});
+        }
+
+        // update the user's data 
+        user.username = username;
+        user.email = email;
+
+        await user.save();
+
+        res.json({
+            userId : user._id,
+            username : user.username,
+            email : user.email
+        });
+    }
+    catch(err){
+        console.error(err.message);
+        res.status(500).send('server error');
+    }
+};
+
+module.exports ={registerUser, getUserProfile, updateUserProfile};
