@@ -1,5 +1,6 @@
 const SpaceStation = require('../models/spaceStationModel');
 const Inventory = require('../models/inventoryModel');
+const spaceStationModel = require('../models/spaceStationModel');
 
 const listSpaceStations = async(req,res) => {
     try{
@@ -56,4 +57,52 @@ const getSpaceStationDetails = async(req,res) => {
     }
 };
 
-module.exports = {listSpaceStations, getSpaceStationDetails};
+const updateInventory = async(req,res) => {
+    const {id} = req.params;
+    const {goodsId, newStockLevel} = req.body;
+
+    if(!goodsId || !newStockLevel || typeof newStockLevel !== 'number'){
+        return res.status(400).json({
+            message : 'invalid request data'
+        });
+    }
+
+    try{
+        const spaceStation = await SpaceStation.findById(id);
+        if(!spaceStation){
+            return res.status(400).json({
+                message : 'space station not found'
+            });
+        }
+
+        let inventoryItem = await Inventory.findOne({
+            stationId : id,
+            goodsId
+        });
+
+        if(!inventoryItem){
+            return res.status(404).json({
+                message : 'goods not found in inventory'
+            });
+        }
+
+        inventoryItem.stockLevel = newStockLevel;
+
+        await inventoryItem.save();
+
+        res.status(200).json({
+            stationId: id,
+            goodsId,
+            newStockLevel,
+            message : 'inventory updated successfully'
+        });
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({
+            message : 'server error'
+        });
+    }
+};
+
+module.exports = {listSpaceStations, getSpaceStationDetails, updateInventory};
