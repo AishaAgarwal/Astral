@@ -46,4 +46,32 @@ const createShipmentOrder = async(req,res) => {
     }
 };
 
-module.exports = {createShipmentOrder};
+// track shipment by shipment id 
+const trackShipment = async(req,res) => {
+    const {trackingId} = req.params;
+
+    try{
+        const shipment = await Shipment.findById(trackingId);
+
+        if(!shipment){
+            return res.status(400).json({
+                message : 'Tracking ID not found'
+            });
+        }
+
+        res.status(200).json({
+            trackingId : shipment._id,
+            status : shipment.status,
+            currentLocation : shipment.shipmentDetails,
+            estimatedDelivery : "not available"
+        });
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({
+            message : 'server error'
+        });
+    }
+};
+
+module.exports = {createShipmentOrder, trackShipment};
