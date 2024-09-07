@@ -123,4 +123,44 @@ const changeUserPassword = async(req,res) => {
     }
 };
 
-module.exports ={registerUser, getUserProfile, updateUserProfile, changeUserPassword};
+// delete a user account 
+const deleteUserAccount = async (req,res) => {
+    const {userId} = req.param;
+
+    try{
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({message: 'user not found'});
+        }
+
+        await User.remove();
+
+        res.status(200).json({message: 'user deleted successfully'});
+    }
+
+    catch(err){
+        console.error(err.message);
+        res.status(500).send('server error');
+    }
+};
+
+// retrieve user notifications
+const getUserNotifications = async(req,res) => {
+    const {userId} = req.params;
+
+    try{
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({message: 'user not found'});
+        }
+
+        const notifications = user.notifications || [];
+        res.status(200).json({notifications});
+    }
+    catch(err){
+        console.error(err.message);
+        res.status(500).send('server error');
+    }
+};
+
+module.exports ={registerUser, getUserProfile, updateUserProfile, changeUserPassword, deleteUserAccount, getUserNotifications};

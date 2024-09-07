@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {registerUser} = require('../controllers/userController');
-const {getUserProfile, updateUserProfile, changeUserPassword} = require('../controllers/userController');
+const {registerUser, getUserNotifications} = require('../controllers/userController');
+const {getUserProfile, updateUserProfile, changeUserPassword, deleteUserAccount} = require('../controllers/userController');
 
 // register a new user 
 router.post('/register', registerUser);
@@ -14,5 +14,11 @@ router.put('/:userId', updateUserProfile);
 
 // change user password 
 router.put('/:userId/password', changeUserPassword);
+
+// delete user account 
+router.delete('/:userId', deleteUserAccount);
+
+// retrieve user notifications 
+router.get('/:userId/notifications', getUserNotifications);
 
 module.exports = router;
