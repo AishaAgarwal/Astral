@@ -1,6 +1,7 @@
 const Shipment = require('../models/shipmentModel');
 const SpaceStation = require('../models/spaceStationModel');
 const Goods = require('../models/goodsModel');
+const ShipmentIssue = require('../models/shipmentIssuesModel');
 
 // create a shipment order 
 const createShipmentOrder = async(req,res) => {
@@ -74,4 +75,42 @@ const trackShipment = async(req,res) => {
     }
 };
 
-module.exports = {createShipmentOrder, trackShipment};
+// report shipment issue
+const reportShipmentIssue = async(req,res) => {
+    const {shipmentId, issueDescription, reportedBy} = req.body;
+
+    if(!shipmentId || !issueDescription || !reportedBy){
+        return res.status(400).json({
+            message : 'invalid request data'
+        });
+    }
+
+    try{
+        const shipment = await Shipment.findById(shipmentId);
+        if(!shipment){
+            return res.status(404).json({
+                message : 'shipment not found'
+            });
+        }
+
+        const shipmentIssue = new ShipmentIssue({
+            shipmentId,
+            issueDescription,
+            reportedBy
+        });
+
+        await shipmentIssue.save();
+
+        return res.status(201).json({
+            message : 'issue reported successfully'
+        });
+    }
+    catch(error){
+        console.error(error);
+        return res.status(500).json({
+            message : 'server error'
+        });
+    }
+};
+
+module.exports = {createShipmentOrder, trackShipment, reportShipmentIssue};
