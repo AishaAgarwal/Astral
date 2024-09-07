@@ -1,5 +1,6 @@
 const User = require('../models/userModel');
 const Notification = require('../models/notificationModel');
+const wss = require('../websocketServer');
 
 const notifyUsers = async(req,res) => {
     const {userId, notificationType, message} = req.body;
@@ -19,17 +20,30 @@ const notifyUsers = async(req,res) => {
             });
         }
 
-        const notification = new Notification({
-            userId,
-            notificationType,
-            message
-        });
+        // const notification = new Notification({
+        //     userId,
+        //     notificationType,
+        //     message
+        // });
 
-        await notification.save();
+        // await notification.save();
 
-        res.status(201).json({
-            message : 'notification sent successfully'
-        });
+        // res.status(201).json({
+        //     message : 'notification sent successfully'
+        // });
+
+        wss.clients.forEach(client => {
+            if(client.readyState === WebSocket.OPEN){
+                client.send(JSON.stringify({
+                    type: 'notification',
+                    userId,
+                    notificationType,
+                    message
+                }));
+            }
+        })
+
+        res.status(201).json({message: 'notification sent successfully'});
     }
     catch(error){
         console.error(error);

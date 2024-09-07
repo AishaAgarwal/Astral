@@ -41,6 +41,18 @@ const initiateBuyRequest = async(req,res) => {
 
         await newTrade.save();
 
+        wss.clients.forEach(client => {
+            if(client.readyState === WebSocket.OPEN){
+                client.send(JSON.stringify({
+                    type: 'trade',
+                    transactionId: newTrade._id,
+                    status : newTrade.status,
+                    message : 'buy request initiated successfully'
+                }));
+            }
+            
+        });
+
         res.status(201).json({
             transactionId : newTrade._id,
             status : newTrade.status,

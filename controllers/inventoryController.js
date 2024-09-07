@@ -68,6 +68,17 @@ const updateStockLevels = async(req,res) => {
             {new: true, upsert: true}
         );
 
+        wss.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({
+                    type: 'inventory',
+                    stationId,
+                    goodsId,
+                    newStockLevel
+                }));
+            }
+        });
+
         res.status(200).json({
             stationId: inventory.stationId,
             goodsId : inventory.goodsId,
