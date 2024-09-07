@@ -1,7 +1,9 @@
 const express = require('express');
-const {listSpaceStations, getSpaceStationDetails, updateInventory} = require('../controllers/spaceStationController');
+const {createSpaceStation,listSpaceStations, getSpaceStationDetails, updateInventory} = require('../controllers/spaceStationController');
 
 const router = express.Router();
+
+router.post('/create', createSpaceStation);
 
 router.get('/spaceStations', listSpaceStations);
 

@@ -2,6 +2,37 @@ const SpaceStation = require('../models/spaceStationModel');
 const Inventory = require('../models/inventoryModel');
 const spaceStationModel = require('../models/spaceStationModel');
 
+
+const createSpaceStation = async(req,res) => {
+    const {name, location, status} = req.body;
+
+    if(!name || !location){
+        return res.status(400).json({
+            message : 'invalid data request'
+        });
+    }
+
+    try{
+        const newStation = new SpaceStation({
+            name,
+            location,
+            status
+        });
+
+        await newStation.save();
+
+        res.status(201).json({
+            message: 'space station created successfully'
+        });
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({
+            message : 'server error'
+        });
+    }
+};
+
 const listSpaceStations = async(req,res) => {
     try{
         const spaceStations = await SpaceStation.find();
@@ -105,4 +136,4 @@ const updateInventory = async(req,res) => {
     }
 };
 
-module.exports = {listSpaceStations, getSpaceStationDetails, updateInventory};
+module.exports = {listSpaceStations, getSpaceStationDetails, updateInventory, createSpaceStation};
