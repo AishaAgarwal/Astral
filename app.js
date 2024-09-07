@@ -11,6 +11,7 @@ const tradeRoutes = require("./routes/tradeRoutes");
 const inventoryRoutes = require('./routes/inventoryRoutes');
 const shipmentRoutes = require('./routes/shipmentRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const spaceStationRoutes = require('./routes/spaceStationRoutes');
 
 const app = express();
 const PORT = process.env.port || 3000;
@@ -27,6 +28,7 @@ app.use("/trade", tradeRoutes);
 app.use('/inventory', inventoryRoutes);
 app.use('/shipment', shipmentRoutes);
 app.use('/notifications', notificationRoutes);
+app.use('/locations', spaceStationRoutes);
 
 //start the server
 app.listen(PORT, async () => {

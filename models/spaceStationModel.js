@@ -11,7 +11,8 @@ const spaceStationSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    required: true,
+    enum : ['Active', 'Inactive'],
+    default : 'Active'
   },
 });
 
