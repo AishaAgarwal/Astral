@@ -1,29 +1,29 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-require('dotenv').config();
-const connectDB = require('./config/database');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+require("dotenv").config();
+const connectDB = require("./config/database");
 
-// import routes 
-const userRoutes = require('./routes/userRoutes');
-const authRoutes = require('./routes/authRoutes');
+// import routes
+const userRoutes = require("./routes/userRoutes");
+const authRoutes = require("./routes/authRoutes");
+const tradeRoutes = require("./routes/tradeRoutes");
 
 const app = express();
 const PORT = process.env.port || 3000;
 
-//middleware 
+//middleware
 app.use(cors());
-
-
 
 app.use(bodyParser.json());
 
-//use routes 
-app.use('/users', userRoutes);
-app.use('/api/auth', authRoutes);
+//use routes
+app.use("/users", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/trade", tradeRoutes);
 
-//start the server 
+//start the server
 app.listen(PORT, async () => {
-    await connectDB();
-    console.log(`Server running on port ${PORT}`);
-})
+  await connectDB();
+  console.log(`Server running on port ${PORT}`);
+});
