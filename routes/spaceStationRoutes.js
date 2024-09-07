@@ -1,8 +1,10 @@
 const express = require('express');
-const {listSpaceStations} = require('../controllers/spaceStationController');
+const {listSpaceStations, getSpaceStationDetails} = require('../controllers/spaceStationController');
 
 const router = express.Router();
 
 router.get('/spaceStations', listSpaceStations);
+
+router.get('/spaceStations/:id', getSpaceStationDetails);
 
 module.exports = router;
