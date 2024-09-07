@@ -93,4 +93,34 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-module.exports ={registerUser, getUserProfile, updateUserProfile};
+// change user password 
+const changeUserPassword = async(req,res) => {
+    const {userId} = req.params;
+    const {oldPassword, newPassword} = req.body;
+
+    if (!oldPassword || !newPassword){
+        return res.status(400).json({message: 'invalid data request'});
+    }
+
+    try{
+        const user = await User.findById(userId);
+        if(!user){
+               return res.status(404).json({message: 'user not found'});
+        }
+
+        if (oldPassword !== user.password){
+            return res.status(400).json({message: 'invalid passowrd'});
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        res.status(200).json({message: 'password updated successfully'});
+    }
+    catch(error){
+        console.log('error updatinh passowrd : ', error);
+        registerUser.status(500).send('server error');
+    }
+};
+
+module.exports ={registerUser, getUserProfile, updateUserProfile, changeUserPassword};
