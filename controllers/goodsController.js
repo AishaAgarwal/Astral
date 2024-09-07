@@ -32,4 +32,33 @@ const createItem = async (req,res) => {
     }
 };
 
-module.exports = {createItem};
+// retrieve goods details 
+const getItemDetails = async (req,res) => {
+    const {goodsId} = req.params;
+
+    try{
+        const goods = await Goods.findById(goodsId);
+
+        if(!goods){
+            return res.status(404).json({
+                message : 'item not found'
+            });
+        }
+
+        res.status(200).json({
+            goodsId : goods._id,
+            name : goods.name,
+            description: goods.description,
+            category: goods.category,
+            price : goods.price
+        });
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({
+            message : 'server error'
+        });
+    }
+};
+
+module.exports = {createItem, getItemDetails};
