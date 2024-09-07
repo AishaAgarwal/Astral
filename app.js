@@ -10,6 +10,7 @@ const authRoutes = require("./routes/authRoutes");
 const tradeRoutes = require("./routes/tradeRoutes");
 const inventoryRoutes = require('./routes/inventoryRoutes');
 const shipmentRoutes = require('./routes/shipmentRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 const PORT = process.env.port || 3000;
@@ -25,6 +26,7 @@ app.use("/api/auth", authRoutes);
 app.use("/trade", tradeRoutes);
 app.use('/inventory', inventoryRoutes);
 app.use('/shipment', shipmentRoutes);
+app.use('/notifications', notificationRoutes);
 
 //start the server
 app.listen(PORT, async () => {
