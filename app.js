@@ -14,8 +14,15 @@ const shipmentRoutes = require('./routes/shipmentRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const spaceStationRoutes = require('./routes/spaceStationRoutes');
 const goodsRoutes = require('./routes/goodsRoute');
+const http = require('http');
+const socketIo = require('socket.io');
+
 
 const app = express();
+
+const server = http.createServer(app);
+const io = socketIo(server);
+
 const PORT = process.env.port || 3000;
 
 //middleware
@@ -32,6 +39,8 @@ app.use('/shipment', shipmentRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/locations', spaceStationRoutes);
 app.use('/goods', goodsRoutes);
+
+require('./socket')(io);
 
 const client = redis.createClient({
   host: '127.0.0.1',
