@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 require("dotenv").config();
 const connectDB = require("./config/database");
+const redis = require('redis');
 
 // import routes
 const userRoutes = require("./routes/userRoutes");
@@ -31,6 +32,19 @@ app.use('/shipment', shipmentRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/locations', spaceStationRoutes);
 app.use('/goods', goodsRoutes);
+
+const client = redis.createClient({
+  host: '127.0.0.1',
+  port : 6379
+});
+
+client.on('error', (err) => {
+  console.log('Redis error:', err);
+});
+
+client.on('connect', () => {
+  console.log('Connected to Redis');
+});
 
 //start the server
 app.listen(PORT, async () => {

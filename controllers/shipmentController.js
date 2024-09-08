@@ -5,6 +5,7 @@ const ShipmentIssue = require('../models/shipmentIssuesModel');
 
 // create a shipment order 
 const createShipmentOrder = async(req,res) => {
+    const userId = req.user.id;
     const {sourceStationId, destinationStationId, goodsId, quantity, shipmentDetails} = req.body;
 
     if(!sourceStationId || !destinationStationId || !goodsId || !quantity || !shipmentDetails){
@@ -24,6 +25,7 @@ const createShipmentOrder = async(req,res) => {
         }
 
         const shipment = new Shipment({
+            userId,
             sourceStationId,
             destinationStationId,
             goodsId,

@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const shipmentSchema = new mongoose.Schema({
+    userId : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref : 'User',
+        required : true
+      },
+
     sourceStationId : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SpaceStation',

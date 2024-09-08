@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 
 const tradeSchema = new mongoose.Schema({
+
+  userId : {
+    type: mongoose.Schema.Types.ObjectId,
+    ref : 'User',
+    required : true
+  },
   sourceStationId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "SpaceStation",
@@ -22,14 +28,19 @@ const tradeSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["initiated", "complted", "failed"],
-    default: "inititated",
+    enum: ["initiated", "completed", "failed"],
+    default: "initiated",
   },
   type: {
     type: String,
     enum: ["buy", "sell"],
     required: true,
   },
+
+  createdAt: {
+    type: Date,
+    default: Date.now
+}
 });
 
 module.exports = mongoose.model("Trade", tradeSchema);

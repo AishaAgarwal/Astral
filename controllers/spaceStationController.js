@@ -34,8 +34,11 @@ const createSpaceStation = async(req,res) => {
 };
 
 const listSpaceStations = async(req,res) => {
+    const{page =1 , limit = 10} = req.query;
     try{
-        const spaceStations = await SpaceStation.find();
+        const spaceStations = await SpaceStation.find()
+        .skip((page-1)*limit)
+        .limit(parseInt(limit));
 
         const response = spaceStations.map(station => ({
             id : station._id.toString(),

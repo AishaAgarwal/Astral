@@ -2,10 +2,12 @@ const Trade = require('../models/tradeModel');
 const SpaceStation = require('../models/spaceStationModel');
 const Goods = require('../models/goodsModel');
 const mongoose = require('mongoose');
+const authenticate = require('../middlewares/authenticate');
 
 // initiate buy request 
 const initiateBuyRequest = async(req,res) => {
     const {sourceStationId, destinationStationId, goodsId, quantity} = req.body;
+    const userId = req.user.id;
 
     if (!mongoose.Types.ObjectId.isValid(sourceStationId) || !mongoose.Types.ObjectId.isValid(destinationStationId)){
         return res.status(400).json({
@@ -31,6 +33,7 @@ const initiateBuyRequest = async(req,res) => {
         }
 
         const newTrade = new Trade({
+            userId,
             sourceStationId,
             destinationStationId,
             goodsId,
@@ -69,6 +72,7 @@ const initiateBuyRequest = async(req,res) => {
 
 // initiate sell request 
 const initiateSellRequest = async(req,res) => {
+    const userId = req.user.id;
     const {sourceStationId, destinationStationId, goodsId, quantity} = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(sourceStationId) || !mongoose.Types.ObjectId.isValid(destinationStationId)){
@@ -95,6 +99,7 @@ const initiateSellRequest = async(req,res) => {
         }
 
         const newTrade = new Trade({
+            userId,
             sourceStationId,
             destinationStationId,
             goodsId,
@@ -152,4 +157,41 @@ const checkTradeStatus = async(req,res) => {
     }
 };
 
-module.exports = {initiateBuyRequest, initiateSellRequest, checkTradeStatus};
+// fetching trade history 
+const getUserTrades = async(req,res) => {
+    const userId = req.params.id;
+    const cachekey = `user_trades_${userId}`;
+
+    client.get(cachekey, async (err, cachedTrades) => {
+        if(err){
+            console.error(err);
+            return res.status(500).json({
+                error: 'internal server error'
+            });
+        }
+        if(cachedTrades){
+            console.log('hit');
+            return res.json(JSON.parse(cachedTrades));
+        }
+
+        else{
+            console.log('miss');
+
+            try{
+                const trades = await Trade.find({
+                    userId
+                }).sort({createdAt : -1}).select('sourceStationId destinationStationId goodsId quantity type status createdAt');
+
+                client.setex(cachekey, 3600, JSON.stringify(trades));
+
+                res.status(trades);
+            }
+            catch(error){
+                console.error('MongoDB error:', error);
+                res.status(500).json({ error: 'Internal server error' });
+            }
+        }
+    });
+};
+
+module.exports = {initiateBuyRequest, initiateSellRequest, checkTradeStatus, getUserTrades};
