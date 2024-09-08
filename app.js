@@ -23,7 +23,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-const PORT = process.env.port || 3000;
+const PORT = process.env.PORT || 3000;
 
 //middleware
 app.use(cors());
@@ -61,13 +61,9 @@ app.get("/", (req, res) => {
 });
 
 
-app.get('/', (req,res) => {
-  res.send('API running');
-})
 
 
-//start the server
-app.listen(PORT, async () => {
+server.listen(PORT, async () => {
   await connectDB();
   console.log(`Server running on port ${PORT}`);
 });
