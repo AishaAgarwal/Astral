@@ -53,27 +53,27 @@ app.get("/", (req, res) => {
 });
 
 // Check if WebSocket is enabled (not in production)
-const isWebSocketEnabled = process.env.NODE_ENV !== 'production';
+// const isWebSocketEnabled = process.env.NODE_ENV !== 'production';
 
-if (isWebSocketEnabled) {
-  const http = require('http');
-  const socketIo = require('socket.io');
+// if (isWebSocketEnabled) {
+//   const http = require('http');
+//   const socketIo = require('socket.io');
 
-  const server = http.createServer(app);
-  const io = socketIo(server);
+//   const server = http.createServer(app);
+//   const io = socketIo(server);
 
-  io.on('connection', (socket) => {
-    console.log('A user connected');
-  });
+//   io.on('connection', (socket) => {
+//     console.log('A user connected');
+//   });
 
-  // Listen on a different port for WebSockets
-  server.listen(8082, () => {
-    console.log("WebSocket server is listening on ws://localhost:8082");
-  });
-} else {
+//   // Listen on a different port for WebSockets
+//   server.listen(8082, () => {
+//     console.log("WebSocket server is listening on ws://localhost:8082");
+//   });
+// } else {
   // Normal HTTP server logic for production
   app.listen(PORT, async () => {
     await connectDB();
     console.log(`Server running on port ${PORT}`);
   });
-}
+
