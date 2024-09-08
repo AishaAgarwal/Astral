@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.1",
     "redis": "^4.7.0",
+    "socket.io": "^8.18.0", 
     "ws": "^8.18.0"
   },
   "devDependencies": {
