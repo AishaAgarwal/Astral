@@ -66,6 +66,10 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
+app.get('/', (req,res) => {
+  res.send('API running');
+})
+
 
 //start the server
 app.listen(PORT, async () => {
