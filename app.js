@@ -5,7 +5,7 @@ require("dotenv").config();
 const connectDB = require("./config/database");
 const redis = require('redis');
 
-// import routes
+// Import routes
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const tradeRoutes = require("./routes/tradeRoutes");
@@ -14,23 +14,16 @@ const shipmentRoutes = require('./routes/shipmentRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const spaceStationRoutes = require('./routes/spaceStationRoutes');
 const goodsRoutes = require('./routes/goodsRoute');
-const http = require('http');
-const socketIo = require('socket.io');
-
 
 const app = express();
 
-const server = http.createServer(app);
-const io = socketIo(server);
+const PORT = process.env.port || 3000;
 
-const PORT = process.env.PORT || 3000;
-
-//middleware
+// Middleware
 app.use(cors());
-
 app.use(bodyParser.json());
 
-//use routes
+// Use routes
 app.use("/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/trade", tradeRoutes);
@@ -40,11 +33,10 @@ app.use('/notifications', notificationRoutes);
 app.use('/locations', spaceStationRoutes);
 app.use('/goods', goodsRoutes);
 
-require('./socket')(io);
-
+// Redis setup
 const client = redis.createClient({
   host: '127.0.0.1',
-  port : 6379
+  port: 6379
 });
 
 client.on('error', (err) => {
@@ -55,15 +47,33 @@ client.on('connect', () => {
   console.log('Connected to Redis');
 });
 
-// default route
+// Default route
 app.get("/", (req, res) => {
   res.send("Welcome to the app");
 });
 
+// Check if WebSocket is enabled (not in production)
+const isWebSocketEnabled = process.env.NODE_ENV !== 'production';
 
+if (isWebSocketEnabled) {
+  const http = require('http');
+  const socketIo = require('socket.io');
 
+  const server = http.createServer(app);
+  const io = socketIo(server);
 
-server.listen(PORT, async () => {
-  await connectDB();
-  console.log(`Server running on port ${PORT}`);
-});
+  io.on('connection', (socket) => {
+    console.log('A user connected');
+  });
+
+  // Listen on a different port for WebSockets
+  server.listen(8082, () => {
+    console.log("WebSocket server is listening on ws://localhost:8082");
+  });
+} else {
+  // Normal HTTP server logic for production
+  app.listen(PORT, async () => {
+    await connectDB();
+    console.log(`Server running on port ${PORT}`);
+  });
+}
