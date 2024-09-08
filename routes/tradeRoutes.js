@@ -5,18 +5,18 @@ const {
   initiateSellRequest,
   checkTradeStatus, getUserTrades
 } = require("../controllers/tradeController");
-const { authenticate } = require("passport");
+const { auth } = require("../middlewares/authenticate");
 
 // initiate buy request
-router.post("/buy", initiateBuyRequest);
+router.post("/buy", auth, initiateBuyRequest);
 
 // initiate sell request
-router.post("/sell", initiateSellRequest);
+router.post("/sell", auth, initiateSellRequest);
 
 // checking trade status 
 router.get('/status/:transactionId', checkTradeStatus);
 
 // getting user trades 
-router.get('/:userId',authenticate, getUserTrades);
+router.get('/:userId',auth, getUserTrades);
 
 module.exports = router;

@@ -3,7 +3,7 @@ const User = require('../models/userModel');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const authenticate = async (req, res, next) => {
+const auth = async (req, res, next) => {
     const token = req.headers['authorization']?.split(' ')[1];
     if (!token) {
         return res.status(401).json({ message: 'No token, authorization denied' });
@@ -19,4 +19,4 @@ const authenticate = async (req, res, next) => {
     }
 };
 
-module.exports = authenticate;
+module.exports = {auth};
